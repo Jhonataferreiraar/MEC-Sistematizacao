@@ -57,6 +57,8 @@ dados/dataset.csv          dataset utilizado
 RELATORIO.md               relatório final
 requirements.txt           dependências do projeto
 assets/screenshots/        evidências da aplicação e dos testes
+\.streamlit/config.toml    tema visual da aplicação
+DESIGN.md                  decisões de identidade visual
 ```
 
 ## Prints da aplicação

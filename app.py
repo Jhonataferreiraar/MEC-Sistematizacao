@@ -140,7 +140,12 @@ DESCOBERTAS = [
 #      DAQUI PARA BAIXO NÃO PRECISA MEXER (mas leia — cai na arguição!)
 # =============================================================================
 
-st.set_page_config(page_title="Laboratório Estatístico Interativo", layout="wide")
+st.set_page_config(
+    page_title="Laboratório Estatístico Interativo",
+    page_icon=":material/analytics:",
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
 
 
 # ------------------------------- utilidades ----------------------------------
@@ -178,6 +183,12 @@ def mostrar(fig):
     plt.close(fig)
 
 
+def titulo_modulo(titulo, icone, apoio):
+    """Apresenta o título e a finalidade de cada módulo com o mesmo padrão visual."""
+    st.header(titulo, icon=icone)
+    st.caption(apoio)
+
+
 def rodar_modulo(funcao, df):
     """Executa um módulo e traduz erros em mensagens amigáveis para iniciantes."""
     try:
@@ -206,7 +217,11 @@ def texto_ou_aviso(texto, rotulo):
 # =============================================================================
 
 def modulo_0_dataset(df):
-    st.header("Módulo 0 — O dataset")
+    titulo_modulo(
+        "Módulo 0 — O dataset",
+        ":material/database:",
+        "Conheça a fonte, o tamanho e a qualidade dos dados usados no laboratório.",
+    )
     st.subheader(NOME_DATASET)
     st.markdown(f"**Fonte original:** {FONTE_DATASET}")
     texto_ou_aviso(POR_QUE_ESCOLHEMOS, "A justificativa da escolha")
@@ -215,11 +230,13 @@ def modulo_0_dataset(df):
     num = colunas_numericas(df)
     cat = colunas_categoricas(df)
 
-    st.markdown("### O contrato do guia (≥ 1.000 registros, ≥ 4 numéricas, ≥ 2 categóricas)")
-    c1, c2, c3 = st.columns(3)
-    c1.metric("Registros (linhas)", n_linhas, "✅" if n_linhas >= 1000 else "❌ menos de 1000")
-    c2.metric("Variáveis numéricas", len(num), "✅" if len(num) >= 4 else "❌ menos de 4")
-    c3.metric("Variáveis categóricas", len(cat), "✅" if len(cat) >= 2 else "❌ menos de 2")
+    with st.container(border=True):
+        st.markdown("#### O contrato do guia")
+        st.caption("Pelo menos 1.000 registros, 4 variáveis numéricas e 2 categóricas.")
+        c1, c2, c3 = st.columns(3)
+        c1.metric("Registros", n_linhas, "✅" if n_linhas >= 1000 else "❌ menos de 1000")
+        c2.metric("Variáveis numéricas", len(num), "✅" if len(num) >= 4 else "❌ menos de 4")
+        c3.metric("Variáveis categóricas", len(cat), "✅" if len(cat) >= 2 else "❌ menos de 2")
 
     st.markdown("### Tipos e valores ausentes por coluna")
     nulos = df.isna().sum()
@@ -244,8 +261,17 @@ def modulo_0_dataset(df):
 # =============================================================================
 
 def modulo_2_descritiva(df):
-    st.header("Módulo 2 — Estatística descritiva")
-    tipo = st.radio("Tipo de variável:", ["Numérica", "Categórica"], horizontal=True)
+    titulo_modulo(
+        "Módulo 2 — Estatística descritiva",
+        ":material/bar_chart:",
+        "Explore medidas de posição, dispersão, frequências, gráficos e outliers.",
+    )
+    tipo = st.segmented_control(
+        "Tipo de variável",
+        ["Numérica", "Categórica"],
+        default="Numérica",
+        key="tipo_variavel",
+    ) or "Numérica"
 
     if tipo == "Numérica":
         col = st.selectbox("Escolha a variável numérica:", colunas_numericas(df))
@@ -279,16 +305,16 @@ def modulo_2_descritiva(df):
         li, ls, outliers = ms.outliers_iqr(dados)
 
         fig, (ax1, ax2) = nova_figura(12, 4, colunas=2)
-        ax1.hist(dados, bins=k, color="#7b3fd8", edgecolor="white")
-        ax1.axvline(med, color="orange", linewidth=2, label=f"média = {med:.1f}")
-        ax1.axvline(mdn, color="green", linewidth=2, linestyle="--", label=f"mediana = {mdn:.1f}")
+        ax1.hist(dados, bins=k, color="#0F5AA6", edgecolor="white")
+        ax1.axvline(med, color="#F59E0B", linewidth=2, label=f"média = {med:.1f}")
+        ax1.axvline(mdn, color="#2E8B57", linewidth=2, linestyle="--", label=f"mediana = {mdn:.1f}")
         ax1.set_title(f"Histograma ({k} classes pela regra de Sturges)")
         ax1.set_xlabel(col)
         ax1.legend()
 
         ax2.boxplot(dados, widths=0.5)
-        ax2.axhline(ls, color="red", linestyle=":", label=f"Q3 + 1,5·IQR = {ls:.1f}")
-        ax2.axhline(li, color="red", linestyle=":", label=f"Q1 − 1,5·IQR = {li:.1f}")
+        ax2.axhline(ls, color="#D94B4B", linestyle=":", label=f"Q3 + 1,5·IQR = {ls:.1f}")
+        ax2.axhline(li, color="#D94B4B", linestyle=":", label=f"Q1 − 1,5·IQR = {li:.1f}")
         ax2.set_title(f"Boxplot — {len(outliers)} outlier(s) pela regra do IQR")
         ax2.set_ylabel(col)
         ax2.set_xticks([])
@@ -301,7 +327,7 @@ def modulo_2_descritiva(df):
         tabela["freq_relativa"] = (tabela["freq_relativa"] * 100).round(2)
         tabela = tabela.rename(columns={"freq_relativa": "freq. relativa (%)"})
         st.dataframe(tabela[["classe", "frequencia", "freq. relativa (%)", "freq_acumulada"]],
-                     use_container_width=True)
+                     width="stretch")
 
         if outliers:
             st.markdown(f"**Outliers ({len(outliers)}):** valores fora de [{li:.2f}, {ls:.2f}]")
@@ -331,7 +357,7 @@ def modulo_2_descritiva(df):
             ax.pie([f for _, f in top], labels=[c for c, _ in top], autopct="%1.1f%%")
             ax.set_title(f"Distribuição de {col}")
         else:
-            ax.bar([c for c, _ in top], [f for _, f in top], color="#7b3fd8")
+            ax.bar([c for c, _ in top], [f for _, f in top], color="#0F5AA6")
             ax.set_title(f"Frequências de {col} (15 mais comuns)")
             ax.tick_params(axis="x", rotation=45)
         mostrar(fig)
@@ -342,7 +368,11 @@ def modulo_2_descritiva(df):
 # =============================================================================
 
 def modulo_3_simulacao(df):
-    st.header("Módulo 3 — Simulação: Lei dos Grandes Números e Teorema Central do Limite")
+    titulo_modulo(
+        "Módulo 3 — Simulação",
+        ":material/casino:",
+        "Veja a Lei dos Grandes Números e o Teorema Central do Limite acontecendo.",
+    )
 
     # ------------------------ Lei dos Grandes Números ------------------------
     st.subheader("3.1 Lei dos Grandes Números")
@@ -359,8 +389,8 @@ def modulo_3_simulacao(df):
         frequencias.append(sucessos_acumulados / i)
 
     fig, ax = nova_figura(10, 4)
-    ax.plot(range(1, n + 1), frequencias, color="#7b3fd8", linewidth=1)
-    ax.axhline(p_teorica, color="red", linestyle="--", label=f"probabilidade teórica = {p_teorica:.3f}")
+    ax.plot(range(1, n + 1), frequencias, color="#0F5AA6", linewidth=1)
+    ax.axhline(p_teorica, color="#D94B4B", linestyle="--", label=f"probabilidade teórica = {p_teorica:.3f}")
     ax.set_xscale("log")
     ax.set_xlabel("nº de lançamentos (escala log)")
     ax.set_ylabel("frequência relativa acumulada")
@@ -390,16 +420,16 @@ def modulo_3_simulacao(df):
 
     fig, (ax1, ax2) = nova_figura(12, 4, colunas=2)
     ax1.hist(dados, bins=ms.numero_classes_sturges(len(dados)), density=True,
-             color="#b39ddb", edgecolor="white")
+             color="#A8C6E8", edgecolor="white")
     ax1.set_title(f"Dados originais: {col}")
     ax1.set_xlabel(col)
 
     ax2.hist(medias, bins=ms.numero_classes_sturges(len(medias)), density=True,
-             color="#7b3fd8", edgecolor="white", label="médias das amostras")
+             color="#0F5AA6", edgecolor="white", label="médias das amostras")
     passo = (max(medias) - min(medias)) / 200 or 1e-9
     xs = [min(medias) + i * passo for i in range(201)]
     ax2.plot(xs, [ms.densidade_normal(x, mu_medias, sigma_medias) for x in xs],
-             color="orange", linewidth=2, label="Normal(μ̂, σ̂)")
+             color="#F59E0B", linewidth=2, label="Normal(μ̂, σ̂)")
     ax2.set_title(f"Médias de {repeticoes} amostras com n = {tamanho}")
     ax2.set_xlabel(f"média de {col}")
     ax2.legend()
@@ -419,7 +449,11 @@ def modulo_3_simulacao(df):
 # =============================================================================
 
 def modulo_4_distribuicoes(df):
-    st.header("Módulo 4 — Sobrepor a teoria aos dados")
+    titulo_modulo(
+        "Módulo 4 — Distribuições teóricas",
+        ":material/timeline:",
+        "Compare os dados reais com curvas teóricas e discuta a qualidade do ajuste.",
+    )
     col = st.selectbox("Variável:", colunas_numericas(df), key="dist_col")
     dados = lista_limpa(df, col)
     if len(dados) < 2:
@@ -435,12 +469,12 @@ def modulo_4_distribuicoes(df):
     k = ms.numero_classes_sturges(len(dados))
 
     fig, ax = nova_figura(10, 4.5)
-    ax.hist(dados, bins=k, density=True, color="#b39ddb", edgecolor="white", label="dados (density=True)")
+    ax.hist(dados, bins=k, density=True, color="#A8C6E8", edgecolor="white", label="dados (density=True)")
     passo = (maximo - minimo) / 300 or 1e-9
     xs = [minimo + i * passo for i in range(301)]
 
     if distribuicao == "Normal":
-        ax.plot(xs, [ms.densidade_normal(x, mu, sigma) for x in xs], color="red", linewidth=2,
+        ax.plot(xs, [ms.densidade_normal(x, mu, sigma) for x in xs], color="#D94B4B", linewidth=2,
                 label=f"Normal(μ = {mu:.2f}, σ = {sigma:.2f})")
         st.markdown(f"**Parâmetros estimados dos dados:** μ = média = {mu:.3f}, σ = desvio = {sigma:.3f}")
     elif distribuicao == "Exponencial":
@@ -449,11 +483,11 @@ def modulo_4_distribuicoes(df):
             mostrar(fig)
             return
         lam = 1 / mu
-        ax.plot(xs, [ms.densidade_exponencial(x, lam) for x in xs], color="red", linewidth=2,
+        ax.plot(xs, [ms.densidade_exponencial(x, lam) for x in xs], color="#D94B4B", linewidth=2,
                 label=f"Exponencial(λ = 1/média = {lam:.4f})")
         st.markdown(f"**Parâmetro estimado:** λ = 1/média = {lam:.4f}")
     elif distribuicao == "Uniforme":
-        ax.plot(xs, [ms.densidade_uniforme(x, minimo, maximo) for x in xs], color="red", linewidth=2,
+        ax.plot(xs, [ms.densidade_uniforme(x, minimo, maximo) for x in xs], color="#D94B4B", linewidth=2,
                 label=f"Uniforme({minimo:.2f}, {maximo:.2f})")
         st.markdown(f"**Parâmetros estimados:** mín = {minimo:.3f}, máx = {maximo:.3f}")
     else:
@@ -466,7 +500,7 @@ def modulo_4_distribuicoes(df):
             mostrar(fig)
             return
         ks = list(range(int(minimo), int(maximo) + 1))
-        ax.plot(ks, [ms.massa_poisson(kk, mu) for kk in ks], "o-", color="red", label=f"Poisson(λ = {mu:.2f})")
+        ax.plot(ks, [ms.massa_poisson(kk, mu) for kk in ks], "o-", color="#D94B4B", label=f"Poisson(λ = {mu:.2f})")
         st.markdown(f"**Parâmetro estimado:** λ = média = {mu:.3f}")
 
     ax.set_title(f"{col}: histograma (density=True) + {distribuicao.split(' ')[0]} estimada dos dados")
@@ -484,7 +518,11 @@ def modulo_4_distribuicoes(df):
 # =============================================================================
 
 def modulo_5_regressao(df):
-    st.header("Módulo 5 — Correlação e regressão linear")
+    titulo_modulo(
+        "Módulo 5 — Correlação e regressão linear",
+        ":material/show_chart:",
+        "Investigue relações entre variáveis, ajuste uma reta e faça uma predição.",
+    )
     numericas = colunas_numericas(df)
     c1, c2 = st.columns(2)
     col_x = c1.selectbox("Variável explicativa X:", numericas, index=0)
@@ -508,9 +546,9 @@ def modulo_5_regressao(df):
     c3.metric("Equação da reta", f"ŷ = {b0:.3f} + {b1:.3f}·x")
 
     fig, ax = nova_figura(10, 5)
-    ax.scatter(x, y, s=12, alpha=0.5, color="#7b3fd8", label="dados")
+    ax.scatter(x, y, s=12, alpha=0.5, color="#0F5AA6", label="dados")
     xmin, xmax = min(x), max(x)
-    ax.plot([xmin, xmax], [b0 + b1 * xmin, b0 + b1 * xmax], color="orange", linewidth=2.5,
+    ax.plot([xmin, xmax], [b0 + b1 * xmin, b0 + b1 * xmax], color="#F59E0B", linewidth=2.5,
             label=f"ŷ = {b0:.2f} + {b1:.2f}·x   (R² = {r2:.3f})")
     ax.set_xlabel(col_x)
     ax.set_ylabel(col_y)
@@ -582,8 +620,8 @@ def evidencia_correlacao(df, desc):
     c1.metric("r de Pearson", f"{r:.4f}")
     c2.metric("R²", f"{r2:.4f}")
     fig, ax = nova_figura(10, 4.5)
-    ax.scatter(x, y, s=10, alpha=0.5, color="#7b3fd8")
-    ax.plot([min(x), max(x)], [b0 + b1 * min(x), b0 + b1 * max(x)], color="orange", linewidth=2)
+    ax.scatter(x, y, s=10, alpha=0.5, color="#0F5AA6")
+    ax.plot([min(x), max(x)], [b0 + b1 * min(x), b0 + b1 * max(x)], color="#F59E0B", linewidth=2)
     ax.set_xlabel(cx)
     ax.set_ylabel(cy)
     mostrar(fig)
@@ -600,8 +638,11 @@ def evidencia_outliers(df, desc):
 
 
 def modulo_6_descobertas(df):
-    st.header("Módulo 6 — As três descobertas")
-    st.caption("Cada descoberta: afirmação em uma frase + evidência gerada pela aplicação + limite honesto.")
+    titulo_modulo(
+        "Módulo 6 — As três descobertas",
+        ":material/lightbulb:",
+        "Afirmação, evidência gerada pela aplicação e limite honesto.",
+    )
     geradores = {"contraste": evidencia_contraste, "correlacao": evidencia_correlacao, "outliers": evidencia_outliers}
 
     for i, desc in enumerate(DESCOBERTAS, start=1):
@@ -620,7 +661,7 @@ def modulo_6_descobertas(df):
         except (NotImplementedError, ValueError) as erro:
             st.error(f"Não foi possível gerar a evidência: {erro}")
         st.markdown(f"**Limite honesto:** {desc.get('limite', '')}")
-        st.divider()
+        st.space("small")
 
 
 # =============================================================================
@@ -628,8 +669,19 @@ def modulo_6_descobertas(df):
 # =============================================================================
 
 def main():
-    st.title("📊 Laboratório Estatístico Interativo")
-    st.caption(f"Equipe: {NOME_EQUIPE}  ·  Toda medida exibida é calculada por minhastats.py (núcleo próprio).")
+    st.title("Laboratório Estatístico Interativo", icon=":material/analytics:")
+    st.caption(f"{NOME_EQUIPE}  ·  Medidas calculadas pelo núcleo próprio `minhastats.py`.")
+
+    with st.container(border=True):
+        c1, c2 = st.columns([3, 1], vertical_alignment="center")
+        with c1:
+            st.markdown("#### Dados reais, fórmulas próprias e descobertas")
+            st.write(
+                "Navegue pelos módulos para entender o dataset, testar simulações "
+                "e encontrar padrões nas vendas de jogos."
+            )
+        with c2:
+            st.metric("Registros", "16.598", "Video Game Sales")
 
     try:
         df = carregar_dados(CAMINHO_DATASET, SEPARADOR_CSV, SEPARADOR_DECIMAL,
@@ -649,10 +701,17 @@ def main():
         "Módulo 5 — Correlação e regressão": modulo_5_regressao,
         "Módulo 6 — Descobertas": modulo_6_descobertas,
     }
-    escolha = st.sidebar.radio("Navegue pelos módulos:", list(modulos.keys()))
-    st.sidebar.markdown("---")
-    st.sidebar.markdown("**Módulo 1** é o núcleo `minhastats.py` — ele não tem tela, "
-                        "mas é ele que calcula tudo o que você vê aqui. Prova: `pytest -v`.")
+    with st.sidebar:
+        st.markdown("## Laboratório")
+        st.caption("MEC-Sistematizacao")
+        st.markdown("#### Navegação")
+        escolha = st.radio("Escolha um módulo", list(modulos.keys()), label_visibility="collapsed")
+        st.space("small")
+        st.markdown(
+            "**Módulo 1** é o núcleo `minhastats.py`. Ele não tem tela: "
+            "é ele que calcula os resultados exibidos aqui."
+        )
+        st.caption(":material/check_circle: 40 testes validados com pytest")
     rodar_modulo(modulos[escolha], df)
 
 
