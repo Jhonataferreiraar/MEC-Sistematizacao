@@ -176,217 +176,184 @@ def massa_poisson(k, lam):
 # TODO 1 — MEDIANA
 # -----------------------------------------------------------------------------
 def mediana(dados):
-    """Mediana: o valor do meio da lista ORDENADA.
+    """Mediana: valor central dos dados ordenados."""
+    if len(dados) == 0:
+        raise ValueError("mediana de sequência vazia é indefinida")
 
-    Regra do guia: ordene; n ímpar -> elemento central;
-                   n par   -> média dos dois centrais.
-    Armadilha: esquecer de ordenar.
+    ordenados = sorted(dados)
+    n = len(ordenados)
+    meio = n // 2
 
-    Exemplos:  mediana([3, 1, 2])    -> 2
-               mediana([4, 1, 3, 2]) -> 2.5
-    """
-    # PASSO 1: se len(dados) == 0, levante ValueError("mediana de sequência vazia é indefinida")
+    if n % 2 == 1:
+        return ordenados[meio]
 
-    # PASSO 2: crie uma lista ordenada:  ordenados = sorted(dados)
-
-    # PASSO 3: guarde o tamanho:  n = len(ordenados)
-
-    # PASSO 4: descubra o índice do meio:  meio = n // 2   (divisão inteira)
-
-    # PASSO 5: se n for ímpar (n % 2 == 1), devolva ordenados[meio]
-
-    # PASSO 6: se n for par, devolva (ordenados[meio - 1] + ordenados[meio]) / 2
-
-    raise NotImplementedError("TODO 1: implemente mediana() em minhastats.py")
+    return (ordenados[meio - 1] + ordenados[meio]) / 2
 
 
 # -----------------------------------------------------------------------------
 # TODO 2 — MODA
 # -----------------------------------------------------------------------------
 def moda(dados):
-    """Moda: o(s) valor(es) que mais se repete(m). Devolve SEMPRE uma LISTA,
-    porque pode haver empate (várias modas).
+    """Devolve uma lista com a(s) moda(s)."""
+    if len(dados) == 0:
+        raise ValueError("moda de sequência vazia é indefinida")
 
-    Exemplos:  moda([1, 2, 2, 3])    -> [2]
-               moda([1, 2, 2, 3, 3]) -> [2, 3]
-    """
-    # PASSO 1: se len(dados) == 0, levante ValueError("moda de sequência vazia é indefinida")
+    contagens = contar_frequencias(dados)
+    maior_frequencia = max(contagens.values())
 
-    # PASSO 2: conte as frequências usando a função pronta:
-    #          contagens = contar_frequencias(dados)
-
-    # PASSO 3: descubra a maior contagem:  maior = max(contagens.values())
-
-    # PASSO 4: monte a lista dos valores cuja contagem é igual à maior:
-    #          modas = [valor for valor, cont in contagens.items() if cont == maior]
-
-    # PASSO 5: devolva a lista (pode ordenar com sorted(modas) se os valores forem números)
-
-    raise NotImplementedError("TODO 2: implemente moda() em minhastats.py")
+    return [
+        valor
+        for valor, frequencia in contagens.items()
+        if frequencia == maior_frequencia
+    ]
 
 
 # -----------------------------------------------------------------------------
 # TODO 3 — AMPLITUDE
 # -----------------------------------------------------------------------------
 def amplitude(dados):
-    """Amplitude = máximo − mínimo.
+    """Amplitude = maior valor - menor valor."""
+    if len(dados) == 0:
+        raise ValueError("amplitude de sequência vazia é indefinida")
 
-    Armadilha do guia: "trivial — mas teste com n = 1" (a resposta deve ser 0).
-    """
-    # PASSO 1: se len(dados) == 0, levante ValueError("amplitude de sequência vazia é indefinida")
-
-    # PASSO 2: devolva max(dados) - min(dados)
-
-    raise NotImplementedError("TODO 3: implemente amplitude() em minhastats.py")
+    return max(dados) - min(dados)
 
 
 # -----------------------------------------------------------------------------
 # TODO 4 — PERCENTIL
 # -----------------------------------------------------------------------------
 def percentil(dados, p):
-    """Percentil p (de 0 a 100) com interpolação linear — a MESMA convenção do
-    np.percentile, para o teste bater.
+    """Percentil usando interpolação linear."""
+    if len(dados) == 0:
+        raise ValueError("percentil de sequência vazia é indefinido")
 
-    Regra do guia: posição = p·(n−1)/100 no vetor ordenado; se a posição for
-    fracionária (ex.: 3.25), interpole entre os vizinhos (índices 3 e 4).
+    if p < 0 or p > 100:
+        raise ValueError("p deve estar entre 0 e 100")
 
-    Exemplo:  percentil([10, 20, 30, 40], 50) -> 25.0
-              (posição = 50·3/100 = 1.5 -> entre 20 e 30 -> 25)
-    """
-    # PASSO 1: se len(dados) == 0, levante ValueError("percentil de sequência vazia é indefinido")
+    ordenados = sorted(dados)
+    n = len(ordenados)
 
-    # PASSO 2: se p < 0 ou p > 100, levante ValueError("p deve estar entre 0 e 100")
+    posicao = p * (n - 1) / 100
+    baixo = int(posicao)
+    alto = min(baixo + 1, n - 1)
+    fracao = posicao - baixo
 
-    # PASSO 3: ordenados = sorted(dados)   e   n = len(ordenados)
-
-    # PASSO 4: posicao = p * (n - 1) / 100
-
-    # PASSO 5: parte inteira da posição:   baixo = int(posicao)
-
-    # PASSO 6: o vizinho de cima, sem estourar a lista:   alto = min(baixo + 1, n - 1)
-
-    # PASSO 7: a parte fracionária:   fracao = posicao - baixo
-
-    # PASSO 8: devolva ordenados[baixo] + fracao * (ordenados[alto] - ordenados[baixo])
-
-    raise NotImplementedError("TODO 4: implemente percentil() em minhastats.py")
+    return ordenados[baixo] + fracao * (
+        ordenados[alto] - ordenados[baixo]
+    )
 
 
 # -----------------------------------------------------------------------------
 # TODO 5 — QUARTIS  (reutiliza o percentil — LEGO!)
 # -----------------------------------------------------------------------------
 def quartis(dados):
-    """Devolve a tupla (Q1, Q2, Q3) = percentis 25, 50 e 75.
+    """Devolve Q1, Q2 e Q3."""
+    q1 = percentil(dados, 25)
+    q2 = percentil(dados, 50)
+    q3 = percentil(dados, 75)
 
-    Exemplo:  quartis([1, 2, 3, 4, 5]) -> (2.0, 3.0, 4.0)
-    """
-    # PASSO 1: q1 = percentil(dados, 25)
-    # PASSO 2: q2 = percentil(dados, 50)
-    # PASSO 3: q3 = percentil(dados, 75)
-    # PASSO 4: devolva (q1, q2, q3)
-
-    raise NotImplementedError("TODO 5: implemente quartis() em minhastats.py")
+    return q1, q2, q3
 
 
 # -----------------------------------------------------------------------------
 # TODO 6 — COEFICIENTE DE VARIAÇÃO
 # -----------------------------------------------------------------------------
 def coeficiente_variacao(dados, em_percentual=True):
-    """CV = desvio padrão (amostral) / média. Se em_percentual=True, multiplique por 100.
+    """Calcula o coeficiente de variação."""
+    m = media(dados)
 
-    Armadilha do guia: média zero -> divisão por zero. Trate com ValueError.
-    """
-    # PASSO 1: m = media(dados)
+    if m == 0:
+        raise ValueError(
+            "coeficiente de variação indefinido: média é zero"
+        )
 
-    # PASSO 2: se m == 0, levante ValueError("coeficiente de variação indefinido: média é zero")
+    cv = desvio_padrao(dados) / m
 
-    # PASSO 3: cv = desvio_padrao(dados) / m
+    if em_percentual:
+        return cv * 100
 
-    # PASSO 4: se em_percentual for True, devolva cv * 100; senão devolva cv
-
-    raise NotImplementedError("TODO 6: implemente coeficiente_variacao() em minhastats.py")
+    return cv
 
 
 # -----------------------------------------------------------------------------
 # TODO 7 — COVARIÂNCIA
 # -----------------------------------------------------------------------------
 def covariancia(x, y, amostral=True):
-    """Covariância entre duas listas de MESMO tamanho.
+    """Calcula a covariância entre duas listas."""
+    if len(x) != len(y):
+        raise ValueError("x e y devem ter o mesmo tamanho")
 
-    cov = Σ (xi − média_x)(yi − média_y) / (n − 1)      (amostral)
-    cov = Σ (xi − média_x)(yi − média_y) / n            (populacional)
+    n = len(x)
 
-    Armadilha do guia: vetores de tamanhos diferentes — valide ANTES.
-    Dica: zip(x, y) percorre as duas listas ao mesmo tempo:
-          for xi, yi in zip(x, y): ...
-    """
-    # PASSO 1: se len(x) != len(y), levante ValueError("x e y devem ter o mesmo tamanho")
+    if n == 0:
+        raise ValueError("covariância de sequência vazia é indefinida")
 
-    # PASSO 2: n = len(x); se n == 0 levante ValueError; se n < 2 e amostral, levante ValueError
+    if n < 2 and amostral:
+        raise ValueError("covariância amostral exige n >= 2")
 
-    # PASSO 3: mx = media(x)   e   my = media(y)
+    mx = media(x)
+    my = media(y)
 
-    # PASSO 4: soma = sum((xi - mx) * (yi - my) for xi, yi in zip(x, y))
+    soma = sum(
+        (xi - mx) * (yi - my)
+        for xi, yi in zip(x, y)
+    )
 
-    # PASSO 5: devolva soma / (n - 1) se amostral, senão soma / n
+    divisor = n - 1 if amostral else n
 
-    raise NotImplementedError("TODO 7: implemente covariancia() em minhastats.py")
+    return soma / divisor
 
 
 # -----------------------------------------------------------------------------
 # TODO 8 — CORRELAÇÃO DE PEARSON
 # -----------------------------------------------------------------------------
 def correlacao(x, y):
-    """r de Pearson = cov(x, y) / (s_x · s_y). Fica sempre entre −1 e 1.
+    """Calcula a correlação de Pearson."""
+    if len(x) != len(y):
+        raise ValueError("x e y devem ter o mesmo tamanho")
 
-    Armadilha do guia: variável constante tem desvio zero -> divisão por zero.
-    """
-    # PASSO 1: sx = desvio_padrao(x)   e   sy = desvio_padrao(y)
-    #          (a covariancia já valida os tamanhos, mas calcule-a depois dos desvios)
+    if len(x) < 2:
+        raise ValueError("correlação exige pelo menos dois valores")
 
-    # PASSO 2: se sx == 0 ou sy == 0, levante ValueError("correlação indefinida: variável constante")
+    sx = desvio_padrao(x)
+    sy = desvio_padrao(y)
 
-    # PASSO 3: devolva covariancia(x, y) / (sx * sy)
+    if sx == 0 or sy == 0:
+        raise ValueError("correlação indefinida: variável constante")
 
-    raise NotImplementedError("TODO 8: implemente correlacao() em minhastats.py")
+    return covariancia(x, y) / (sx * sy)
 
 
 # -----------------------------------------------------------------------------
 # TODO 9 — REGRA DE STURGES  (Módulo 2: nº de classes do histograma)
 # -----------------------------------------------------------------------------
 def numero_classes_sturges(n):
-    """k = 1 + 3,322 · log10(n), arredondado PARA CIMA (math.ceil).
+    """Calcula o número de classes pela regra de Sturges."""
+    if n <= 0:
+        raise ValueError("n deve ser positivo")
 
-    Exemplo: n = 1000 -> 1 + 3.322·3 = 10.966 -> 11 classes.
-    """
-    # PASSO 1: se n <= 0, levante ValueError("n deve ser positivo")
-
-    # PASSO 2: devolva math.ceil(1 + 3.322 * math.log10(n))
-
-    raise NotImplementedError("TODO 9: implemente numero_classes_sturges() em minhastats.py")
+    return math.ceil(1 + 3.322 * math.log10(n))
 
 
 # -----------------------------------------------------------------------------
 # TODO 10 — OUTLIERS PELA REGRA DO IQR  (reutiliza quartis — LEGO!)
 # -----------------------------------------------------------------------------
 def outliers_iqr(dados):
-    """Regra do IQR: outlier é todo valor fora de [Q1 − 1,5·IQR, Q3 + 1,5·IQR].
+    """Identifica outliers pela regra do IQR."""
+    q1, q2, q3 = quartis(dados)
 
-    Devolve a tupla (limite_inferior, limite_superior, lista_de_outliers).
-    """
-    # PASSO 1: q1, q2, q3 = quartis(dados)
+    iqr = q3 - q1
 
-    # PASSO 2: iqr = q3 - q1
+    limite_inferior = q1 - 1.5 * iqr
+    limite_superior = q3 + 1.5 * iqr
 
-    # PASSO 3: limite_inferior = q1 - 1.5 * iqr
+    outliers = [
+        x
+        for x in dados
+        if x < limite_inferior or x > limite_superior
+    ]
 
-    # PASSO 4: limite_superior = q3 + 1.5 * iqr
-
-    # PASSO 5: outliers = [x for x in dados if x < limite_inferior or x > limite_superior]
-
-    # PASSO 6: devolva (limite_inferior, limite_superior, outliers)
-
-    raise NotImplementedError("TODO 10: implemente outliers_iqr() em minhastats.py")
+    return limite_inferior, limite_superior, outliers
 
 
 # -----------------------------------------------------------------------------
@@ -400,69 +367,84 @@ FOLGA_ASSIMETRIA = 0.2
 
 
 def interpretar_assimetria(dados):
-    """Devolve uma FRASE (string) lendo a relação média × mediana.
+    """Interpreta a assimetria comparando média e mediana."""
+    m = media(dados)
+    md = mediana(dados)
+    s = desvio_padrao(dados)
 
-    Regra do guia:
-      - média > mediana com folga  -> "Assimetria à direita: valores altos puxam a média."
-      - mediana > média com folga  -> "Assimetria à esquerda: valores baixos puxam a média."
-      - caso contrário             -> "Distribuição aproximadamente simétrica."
-    onde "com folga" significa: a diferença é maior que FOLGA_ASSIMETRIA · desvio.
+    if s == 0:
+        return "Todos os valores são iguais: não há dispersão."
 
-    IMPORTANTE para o teste passar: a frase deve conter a palavra
-    "direita", "esquerda" ou "simétrica", conforme o caso.
-    """
-    # PASSO 1: m = media(dados);  md = mediana(dados);  s = desvio_padrao(dados)
+    folga = FOLGA_ASSIMETRIA * s
 
-    # PASSO 2: se s == 0, devolva "Todos os valores são iguais: não há dispersão."
+    if m - md > folga:
+        return (
+            f"Assimetria à direita: valores altos puxam a média "
+            f"(média = {m:.2f} > mediana = {md:.2f})."
+        )
 
-    # PASSO 3: folga = FOLGA_ASSIMETRIA * s
+    if md - m > folga:
+        return (
+            f"Assimetria à esquerda: valores baixos puxam a média "
+            f"(mediana = {md:.2f} > média = {m:.2f})."
+        )
 
-    # PASSO 4: se m - md > folga, devolva a frase da assimetria à DIREITA
-    #          (dica: inclua os números, ex.: f"... (média = {m:.2f} > mediana = {md:.2f})")
-
-    # PASSO 5: se md - m > folga, devolva a frase da assimetria à ESQUERDA
-
-    # PASSO 6: senão, devolva a frase "aproximadamente simétrica"
-
-    raise NotImplementedError("TODO 11: implemente interpretar_assimetria() em minhastats.py")
+    return (
+        f"Distribuição aproximadamente simétrica "
+        f"(média = {m:.2f}, mediana = {md:.2f})."
+    )
 
 
 # -----------------------------------------------------------------------------
 # TODO 12 — REGRESSÃO LINEAR SIMPLES (mínimos quadrados)
 # -----------------------------------------------------------------------------
 def regressao_linear(x, y):
-    """Ajusta a reta  y_prev = b0 + b1·x  e devolve a tupla (b0, b1, r2).
+    """Calcula regressão linear simples."""
+    if len(x) != len(y) or len(x) < 2:
+        raise ValueError(
+            "x e y devem ter o mesmo tamanho e pelo menos dois valores"
+        )
 
-    b1 = Σ(x − média_x)(y − média_y) / Σ(x − média_x)²      (= cov(x,y)/var(x))
-    b0 = média_y − b1 · média_x
-    R² = 1 − Σ(y − y_prev)² / Σ(y − média_y)²
+    mx = media(x)
+    my = media(y)
 
-    O guia mostra esta função completa na Etapa 5. Entenda cada linha antes
-    de escrever — na arguição, este é um trecho favorito do professor.
-    """
-    # PASSO 1: se len(x) != len(y) ou len(x) < 2, levante ValueError
+    numerador = sum(
+        (xi - mx) * (yi - my)
+        for xi, yi in zip(x, y)
+    )
 
-    # PASSO 2: mx = media(x)   e   my = media(y)
+    denominador = sum(
+        (xi - mx) ** 2
+        for xi in x
+    )
 
-    # PASSO 3: numerador   = sum((xi - mx) * (yi - my) for xi, yi in zip(x, y))
+    if denominador == 0:
+        raise ValueError("x é constante: reta indefinida")
 
-    # PASSO 4: denominador = sum((xi - mx) ** 2 for xi in x)
-    #          se denominador == 0, levante ValueError("x é constante: reta indefinida")
+    b1 = numerador / denominador
+    b0 = my - b1 * mx
 
-    # PASSO 5: b1 = numerador / denominador
+    previstos = [
+        b0 + b1 * xi
+        for xi in x
+    ]
 
-    # PASSO 6: b0 = my - b1 * mx
+    sq_res = sum(
+        (yi - yp) ** 2
+        for yi, yp in zip(y, previstos)
+    )
 
-    # PASSO 7: previstos = [b0 + b1 * xi for xi in x]
+    sq_tot = sum(
+        (yi - my) ** 2
+        for yi in y
+    )
 
-    # PASSO 8: sq_res = sum((yi - yp) ** 2 for yi, yp in zip(y, previstos))
+    if sq_tot == 0:
+        raise ValueError("y é constante: R² indefinido")
 
-    # PASSO 9: sq_tot = sum((yi - my) ** 2 for yi in y)
-    #          se sq_tot == 0, levante ValueError("y é constante: R² indefinido")
+    r2 = 1 - sq_res / sq_tot
 
-    # PASSO 10: devolva (b0, b1, 1 - sq_res / sq_tot)
-
-    raise NotImplementedError("TODO 12: implemente regressao_linear() em minhastats.py")
+    return b0, b1, r2
 
 
 # =============================================================================
