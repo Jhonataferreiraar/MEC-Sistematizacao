@@ -33,41 +33,56 @@ import minhastats as ms  # <- O NÚCLEO DE VOCÊS. Toda conta exibida vem daqui.
 # =============================================================================
 
 # ---- TODO 13: identificação e arquivo de dados ------------------------------
-NOME_EQUIPE = "TODO 13: nome da equipe"
-CAMINHO_DATASET = "dados/dataset.csv"   # deixe assim se o CSV estiver em dados/
-SEPARADOR_CSV = ","                     # use ";" se o CSV brasileiro separar por ponto e vírgula
-SEPARADOR_DECIMAL = "."                 # use "," se os números vierem como 3,14
-
-# Colunas que deveriam ser numéricas mas vieram como texto ("N/A", "—", etc.).
-# Ex.: ["preco", "nota"]. Elas serão convertidas com pd.to_numeric(errors="coerce").
+NOME_EQUIPE = "MEC-Sistematizacao"
+CAMINHO_DATASET = "dados/dataset.csv"
+SEPARADOR_CSV = ","
+SEPARADOR_DECIMAL = "."
 COLUNAS_PARA_CONVERTER_EM_NUMERO = []
 
 # ---- TODO 14: sobre o dataset (aparece no Módulo 0) --------------------------
-NOME_DATASET = "TODO 14: nome do dataset (ex.: Steam Games 2024)"
-FONTE_DATASET = "TODO 14: link da fonte ORIGINAL (Kaggle, UCI, dados.gov.br...)"
-POR_QUE_ESCOLHEMOS = "TODO 14: 2 ou 3 frases: por que este tema desperta curiosidade na equipe?"
+NOME_DATASET = "Video Game Sales"
+FONTE_DATASET = (
+    "https://www.kaggle.com/datasets/gregorut/videogamesales"
+)
+POR_QUE_ESCOLHEMOS = (
+    "Escolhemos o dataset Video Game Sales porque ele permite investigar "
+    "como as vendas de jogos variam entre gêneros e plataformas. Também "
+    "podemos analisar a relação entre as vendas em diferentes regiões e "
+    "identificar jogos com vendas muito acima do padrão."
+)
 DECISAO_SOBRE_NULOS = (
-    "TODO 14: o que fizemos com valores ausentes? (ex.: removemos as linhas com nulos "
-    "na variável analisada; a coluna X tinha 'N/A' e foi convertida com to_numeric)."
+    "O dataset possui 271 valores ausentes em Year e 58 em Publisher. "
+    "Mantivemos os registros e usamos apenas os valores válidos da variável "
+    "analisada. Em análises com duas variáveis, removemos somente os pares "
+    "que possuem algum valor ausente."
 )
 
 # ---- TODO 15: leitura do Teorema Central do Limite (Módulo 3) ----------------
 TEXTO_LEITURA_TCL = (
-    "TODO 15: escreva com as palavras da equipe o que acontece com o histograma das "
-    "médias quando n cresce, e por que isso explica a Normal aparecer em todo lugar."
+    "Quando o tamanho das amostras aumenta, o histograma das médias "
+    "amostrais fica mais concentrado e mais parecido com uma distribuição "
+    "Normal. A média das médias se aproxima da média dos dados, enquanto "
+    "o desvio das médias diminui aproximadamente na proporção de 1 sobre "
+    "a raiz quadrada do tamanho da amostra."
 )
 
 # ---- TODO 16: discussão do ajuste das distribuições (Módulo 4) ---------------
 TEXTO_DISCUSSAO_DISTRIBUICAO = (
-    "TODO 16: para a variável que vocês escolheram, a Normal ajusta bem ou mal? Por quê? "
-    "(ex.: 'A Normal falha porque a variável tem cauda à direita; a Exponencial descreve melhor.')"
+    "A variável Global_Sales apresenta forte assimetria à direita, pois "
+    "a maioria dos jogos possui vendas relativamente baixas e poucos jogos "
+    "possuem vendas muito altas. Por isso, a distribuição Normal tende a "
+    "não representar bem a cauda direita. A distribuição Exponencial é "
+    "uma candidata mais coerente para representar a concentração de valores "
+    "baixos, embora também possa não representar perfeitamente os grandes "
+    "sucessos."
 )
 
 # ---- TODO 17: exemplo de causalidade duvidosa (Módulo 5) --------------------
 EXEMPLO_CAUSALIDADE_DUVIDOSA = (
-    "TODO 17: dê um exemplo DO PRÓPRIO DATASET em que X e Y estão associados "
-    "mas um não causa o outro (ex.: 'jogos com mais avaliações têm nota maior, "
-    "mas provavelmente é a popularidade que gera as duas coisas')."
+    "NA_Sales e EU_Sales podem apresentar associação positiva, mas isso não "
+    "significa que as vendas na América do Norte causem as vendas na Europa. "
+    "A popularidade do jogo, o investimento em marketing, a plataforma e "
+    "o gênero podem influenciar as duas variáveis."
 )
 
 # ---- TODO 18, 19 e 20: AS TRÊS DESCOBERTAS (Módulo 6) -----------------------
@@ -77,28 +92,47 @@ EXEMPLO_CAUSALIDADE_DUVIDOSA = (
 #   "outliers"   -> uma NUMÉRICA (quem são os pontos fora da curva)
 # Troque os nomes das colunas pelos do SEU dataset (exatamente como no CSV).
 DESCOBERTAS = [
-    {   # TODO 18
-        "titulo": "TODO 18: título curto da descoberta 1",
+    {
+        "titulo": "Diferenças de vendas entre gêneros",
         "tipo": "contraste",
-        "categorica": "TODO: nome da coluna categórica",
-        "numerica": "TODO: nome da coluna numérica",
-        "afirmacao": "TODO 18: uma frase que surpreende, compara ou conecta.",
-        "limite": "TODO 18: o limite honesto (ex.: 'associação, não causa; amostra só cobre 2023').",
+        "categorica": "Genre",
+        "numerica": "Global_Sales",
+        "afirmacao": (
+            "As vendas globais apresentam diferenças entre os gêneros. "
+            "A tabela e o boxplot mostram qual gênero possui a maior mediana."
+        ),
+        "limite": (
+            "A comparação mostra associação entre gênero e vendas neste "
+            "dataset, mas não prova que o gênero cause maiores vendas."
+        ),
     },
-    {   # TODO 19
-        "titulo": "TODO 19: título curto da descoberta 2",
+    {
+        "titulo": "Associação entre vendas norte-americanas e europeias",
         "tipo": "correlacao",
-        "x": "TODO: nome da coluna numérica X",
-        "y": "TODO: nome da coluna numérica Y",
-        "afirmacao": "TODO 19: correlação forte onde não se esperava, ou ausente onde todos jurariam existir.",
-        "limite": "TODO 19: o limite honesto.",
+        "x": "NA_Sales",
+        "y": "EU_Sales",
+        "afirmacao": (
+            "As vendas na América do Norte e na Europa apresentam associação "
+            "positiva, observada pelo gráfico de dispersão e pelo valor de r."
+        ),
+        "limite": (
+            "A correlação não implica causalidade e pode ser influenciada "
+            "pela popularidade, plataforma, gênero ou período de lançamento."
+        ),
     },
-    {   # TODO 20
-        "titulo": "TODO 20: título curto da descoberta 3",
+    {
+        "titulo": "Jogos com vendas globais fora do padrão",
         "tipo": "outliers",
-        "numerica": "TODO: nome da coluna numérica",
-        "afirmacao": "TODO 20: quem são os outliers e o que têm em comum?",
-        "limite": "TODO 20: o limite honesto.",
+        "numerica": "Global_Sales",
+        "afirmacao": (
+            "A regra do IQR identifica jogos com vendas globais muito acima "
+            "do padrão observado no restante do dataset."
+        ),
+        "limite": (
+            "Um outlier é um valor estatisticamente distante, mas isso não "
+            "significa que o registro seja um erro ou que represente todos "
+            "os jogos."
+        ),
     },
 ]
 
