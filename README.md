@@ -63,45 +63,45 @@ DESIGN.md                  decisões de identidade visual
 
 ## Prints da aplicação
 
-### Módulo 0 — Dataset
+### Módulo 0 - Dataset
 
-![Módulo 0 — Dataset](<assets/screenshots/Módulo 0 - Dataset.png>)
+![Módulo 0 - Dataset](<assets/screenshots/Módulo 0 - Dataset.png>)
 
-### Módulo 2 — Estatística descritiva
+### Módulo 2 - Estatística descritiva
 
-![Módulo 2 — Descritiva 1](<assets/screenshots/Módulo 2 - Descritiva (1).png>)
+![Módulo 2 - Descritiva 1](<assets/screenshots/Módulo 2 - Descritiva (1).png>)
 
-![Módulo 2 — Descritiva 2](<assets/screenshots/Módulo 2 - Descritiva (2).png>)
+![Módulo 2 - Descritiva 2](<assets/screenshots/Módulo 2 - Descritiva (2).png>)
 
-![Módulo 2 — Descritiva 3](<assets/screenshots/Módulo 2 - Descritiva (3).png>)
+![Módulo 2 - Descritiva 3](<assets/screenshots/Módulo 2 - Descritiva (3).png>)
 
-### Módulo 3 — Simulação
+### Módulo 3 - Simulação
 
-![Módulo 3 — Simulação 1](<assets/screenshots/Módulo 3 - Simulação (1).png>)
+![Módulo 3 - Simulação 1](<assets/screenshots/Módulo 3 - Simulação (1).png>)
 
-![Módulo 3 — Simulação 2](<assets/screenshots/Módulo 3 - Simulação (2).png>)
+![Módulo 3 - Simulação 2](<assets/screenshots/Módulo 3 - Simulação (2).png>)
 
-### Módulo 4 — Distribuições
+### Módulo 4 - Distribuições
 
-![Módulo 4 — Distribuições 1](<assets/screenshots/Módulo 4 - Distribuições (1).png>)
+![Módulo 4 - Distribuições 1](<assets/screenshots/Módulo 4 - Distribuições (1).png>)
 
-![Módulo 4 — Distribuições 2](<assets/screenshots/Módulo 4 - Distribuições (2).png>)
+![Módulo 4 - Distribuições 2](<assets/screenshots/Módulo 4 - Distribuições (2).png>)
 
-### Módulo 5 — Correlação e regressão
+### Módulo 5 - Correlação e regressão
 
-![Módulo 5 — Correlação e regressão 1](<assets/screenshots/Módulo 5 - Correlação e regressão (1).png>)
+![Módulo 5 - Correlação e regressão 1](<assets/screenshots/Módulo 5 - Correlação e regressão (1).png>)
 
-![Módulo 5 — Correlação e regressão 2](<assets/screenshots/Módulo 5 - Correlação e regressão (2).png>)
+![Módulo 5 - Correlação e regressão 2](<assets/screenshots/Módulo 5 - Correlação e regressão (2).png>)
 
-### Módulo 6 — Descobertas
+### Módulo 6 - Descobertas
 
-![Módulo 6 — Descobertas 1](<assets/screenshots/Módulo 6 - Descobertas (1).png>)
+![Módulo 6 - Descobertas 1](<assets/screenshots/Módulo 6 - Descobertas (1).png>)
 
-![Módulo 6 — Descobertas 2](<assets/screenshots/Módulo 6 - Descobertas (2).png>)
+![Módulo 6 - Descobertas 2](<assets/screenshots/Módulo 6 - Descobertas (2).png>)
 
-![Módulo 6 — Descobertas 3](<assets/screenshots/Módulo 6 - Descobertas (3).png>)
+![Módulo 6 - Descobertas 3](<assets/screenshots/Módulo 6 - Descobertas (3).png>)
 
-![Módulo 6 — Descobertas 4](<assets/screenshots/Módulo 6 - Descobertas (4).png>)
+![Módulo 6 - Descobertas 4](<assets/screenshots/Módulo 6 - Descobertas (4).png>)
 
 ### Testes
 
