@@ -175,7 +175,7 @@ As conclusões são válidas para os registros presentes neste dataset e não de
 
 | Componente | O que fez | Commits |
 |------------|-----------|---------|
-| Jhonata Ferreira de Araujo — 72650246 | Desenvolvimento completo do núcleo estatístico, testes, dataset, aplicação Streamlit, relatório, README e evidências | Commits registrados no histórico do Git |
+| Jhonata Ferreira de Araujo - 72650246 | Desenvolvimento completo do núcleo estatístico, testes, dataset, aplicação Streamlit, relatório, README e evidências | Commits registrados no histórico do Git |
 
 ## 9. Links para entrega
 
