@@ -4,7 +4,7 @@
 **Componente:** Jhonata Ferreira de Araujo — 72650246
 **Repositório:** https://github.com/Jhonataferreiraar/MEC-Sistematizacao
 **Fonte do dataset:** https://www.kaggle.com/datasets/gregorut/videogamesales
-**Vídeo:** inserir o link público após a gravação
+**Vídeo:** https://youtu.be/zXUieqC58bc
 
 ## Resumo executivo
 
@@ -181,4 +181,4 @@ As conclusões são válidas para os registros presentes neste dataset e não de
 
 - **Dataset original:** https://www.kaggle.com/datasets/gregorut/videogamesales
 - **Repositório:** https://github.com/Jhonataferreiraar/MEC-Sistematizacao
-- **Vídeo:** inserir o link público após a gravação
+- **Vídeo:** https://youtu.be/zXUieqC58bc

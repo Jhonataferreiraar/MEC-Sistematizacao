@@ -9,7 +9,7 @@
 **Dataset:** Video Game Sales
 **Fonte original:** https://www.kaggle.com/datasets/gregorut/videogamesales
 **Repositório:** https://github.com/Jhonataferreiraar/MEC-Sistematizacao
-**Vídeo:** inserir o link público após a gravação
+**Vídeo:** https://youtu.be/zXUieqC58bc
 
 ## Como rodar
 
